@@ -1,0 +1,32 @@
+{
+  "name": "create-my-express-app",
+  "version": "1.0.0",
+  "description": "Create a new express app with boilerplate code.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "create-my-express-app": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prajilk/express-starter-template.git"
+  },
+  "keywords": [
+    "express",
+    "express template",
+    "express boilerplate code",
+    "express starter file"
+  ],
+  "author": "Prajil K",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prajilk/express-starter-template/issues"
+  },
+  "homepage": "https://github.com/prajilk/express-starter-template#readme",
+  "dependencies": {
+    "inquirer": "^9.2.10"
+  }
+}

@@ -1,0 +1,8 @@
+const express=require('express');
+const userRouter=express.Router();
+const {SomeUserFunction}=require('../controllers/UserController');
+
+userRouter.get('/',SomeUserFunction)
+//userRouter.post('/login',login);
+
+module.exports=userRouter;
