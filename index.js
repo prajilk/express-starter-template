@@ -5,7 +5,14 @@ import * as fs from "fs";
 import path from 'path';
 import { execSync } from 'child_process';
 
-const __dirname = path.resolve();
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+// const __dirname = path.resolve();
 
 const CHOICES = ['mongodb/mongoose'];
 
