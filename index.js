@@ -11,9 +11,6 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
-// const __dirname = path.resolve();
-
 const CHOICES = ['mongodb/mongoose'];
 
 const QUESTIONS = [
@@ -98,9 +95,9 @@ inquirer.prompt(QUESTIONS).then(answers => {
 
 
         const fileData = [
-            { path: srcPath, folders: [], name: 'index2.js', content: readTemplateFile(indexCodeFile) },
-            { path: destination, folders: [], name: '.gitignore2', content: gitContent },
-            { path: destination, folders: [], name: 'package2.json', content: packageContent },
+            { path: srcPath, folders: [], name: 'index.js', content: readTemplateFile(indexCodeFile) },
+            { path: destination, folders: [], name: '.gitignore', content: gitContent },
+            { path: destination, folders: [], name: 'package.json', content: packageContent },
         ];
 
         if (answers['database-choice'] === 'mongodb/mongoose') {
