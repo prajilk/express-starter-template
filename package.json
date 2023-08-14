@@ -1,5 +1,5 @@
 {
-  "name": "create-my-express-app",
+  "name": "create-my-express-server",
   "version": "1.0.0",
   "description": "Create a new express app with boilerplate code.",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "create-my-express-app": "./index.js"
+    "create-my-express-server": "./index.js"
   },
   "repository": {
     "type": "git",
