@@ -8,8 +8,9 @@ This template creates necessary files and folder for a basic express server, cre
 
    ```bash
    npx create-my-express-app
-   Then follow the prompts!
    ```
+
+   Then follow the prompts!
 
 You can also directly specify the project name, database name, and the database you want to use via additional command line options. For example, run:
 
