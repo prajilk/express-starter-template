@@ -150,6 +150,6 @@ function toValidPackageName(projectName) {
 if (argTargetDir) result.projectName = argTargetDir;
 if (argDatabase) result.databaseChoice = argDatabase;
 if (!result.databaseName) result.databaseName = argDbName;
-if (!result.packageName) result.packageName = result.projectName;
+if (!result.packageName) result.packageName = path.basename(path.resolve());
 
 createTemplate(result);
