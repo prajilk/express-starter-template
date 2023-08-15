@@ -27,17 +27,8 @@
   },
   "homepage": "https://github.com/prajilk/express-starter-template#readme",
   "dependencies": {
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "inquirer": "^9.2.10",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
-    "mongoose": "^7.4.3",
     "prompts": "^2.4.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
   }
 }
