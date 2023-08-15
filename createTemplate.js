@@ -32,14 +32,13 @@ const createFolder = (folderPath, folder1, folder2) => {
 const createTemplate = (answers) => {
 
     let destination = process.cwd();
-    const currentDir = process.cwd().split("/").at(-1);
+    const currentDir = process.cwd().split("\\").at(-1);
 
     if (answers.projectName !== '.' || answers.projectName !== currentDir) {
+        console.log(answers.projectName, currentDir);
         fs.mkdirSync(path.join(destination, answers.projectName), { recursive: true })
         destination = path.join(destination, answers.projectName);
     }
-
-    const srcPath = path.join(destination, 'src');
 
     // Convert JS Object to json
     const packageJson = readTemplateFile(packageFile);
@@ -53,15 +52,14 @@ const createTemplate = (answers) => {
     try {
 
         const foldersToCreate = [
-            [destination, 'src'],
-            [srcPath, 'config'],
-            [srcPath, 'api', 'routes'],
+            [destination, 'config'],
+            [destination, 'api', 'routes'],
         ];
 
         if (answers['databaseChoice'] === 'mongodb') {
             foldersToCreate.push(
-                [srcPath, 'api', 'models'],
-                [srcPath, 'api', 'controllers']
+                [destination, 'api', 'models'],
+                [destination, 'api', 'controllers']
             );
         }
 
@@ -69,7 +67,7 @@ const createTemplate = (answers) => {
 
 
         const fileData = [
-            { path: srcPath, folders: [], name: 'index.js', content: readTemplateFile(indexCodeFile) },
+            { path: destination, folders: [], name: 'index.js', content: readTemplateFile(indexCodeFile) },
             { path: destination, folders: [], name: '.gitignore', content: gitContent },
             { path: destination, folders: [], name: 'package.json', content: packageContent },
         ];
@@ -77,10 +75,10 @@ const createTemplate = (answers) => {
         if (answers['databaseChoice'] === 'mongodb') {
             fileData.push(
                 { path: destination, folders: [], name: '.env', content: envContent + answers['databaseName'] },
-                { path: srcPath, folders: ['config'], name: 'dbConfig.js', content: readTemplateFile(dbConfigFile) },
-                { path: srcPath, folders: ['api', 'models'], name: 'User.js', content: readTemplateFile(userModelFile) },
-                { path: srcPath, folders: ['api', 'controllers'], name: 'UserController.js', content: readTemplateFile(userControllerFile) },
-                { path: srcPath, folders: ['api', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(userRouterFile) }
+                { path: destination, folders: ['config'], name: 'dbConfig.js', content: readTemplateFile(dbConfigFile) },
+                { path: destination, folders: ['api', 'models'], name: 'User.js', content: readTemplateFile(userModelFile) },
+                { path: destination, folders: ['api', 'controllers'], name: 'UserController.js', content: readTemplateFile(userControllerFile) },
+                { path: destination, folders: ['api', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(userRouterFile) }
             );
         }
 
