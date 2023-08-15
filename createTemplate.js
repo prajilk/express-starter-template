@@ -32,10 +32,8 @@ const createFolder = (folderPath, folder1, folder2) => {
 const createTemplate = (answers) => {
 
     let destination = process.cwd();
-    const currentDir = process.cwd().split("\\").at(-1);
 
-    if (answers.projectName !== '.' || answers.projectName !== currentDir) {
-        console.log(answers.projectName, currentDir);
+    if (answers.projectName !== '.') {
         fs.mkdirSync(path.join(destination, answers.projectName), { recursive: true })
         destination = path.join(destination, answers.projectName);
     }
@@ -115,7 +113,7 @@ const createTemplate = (answers) => {
 
         console.log("\n     Installing packages... (express, cors, cookie-parser, dotenv, mongoose, nodemon)\n");
 
-        if (answers.projectName !== '.' || answers.projectName !== currentDir) {
+        if (answers.projectName !== '.') {
             installDependencies(`cd ${answers.projectName} && npm i express cors cookie-parser dotenv mongoose`);
             installDependencies(`cd ${answers.projectName} && npm i -D nodemon`)
             installDependencies(`cd ${answers.projectName} && git init`)

@@ -22,7 +22,7 @@ const DATABASES = [
     },
 ]
 
-const defaultTargetDir = path.basename(path.resolve());
+const defaultTargetDir = "server";
 const argTargetDir = formatTargetDir(argv._[0])
 
 let argDatabase = argv.database || argv.db
@@ -149,7 +149,6 @@ function toValidPackageName(projectName) {
 
 if (argTargetDir) result.projectName = argTargetDir;
 if (argDatabase) result.databaseChoice = argDatabase;
-if (result.projectName === '.' && !result.packageName) result.projectName = path.basename(path.resolve());
 if (!result.databaseName) result.databaseName = argDbName;
 if (!result.packageName) result.packageName = result.projectName;
 

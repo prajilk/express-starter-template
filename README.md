@@ -19,6 +19,8 @@ You can also directly specify the project name, database name, and the database 
 npx create-my-express-app new-project --db mongodb --dbn new-database
 ```
 
+You can use `.` for the project name to scaffold in the current directory.
+
 use `--help` or `-h` to see options.
 
 Currently supported databases:
