@@ -1,12 +1,12 @@
 {
-    "name": "",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "run": "nodemon index.js",
-        "start": "node index.js"
-    },
-    "author": "Prajil K",
-    "license": "ISC"
+  "name": "",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
 }
