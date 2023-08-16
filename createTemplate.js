@@ -84,30 +84,12 @@ const createTemplate = (answers) => {
 
         // INSTALL DEPENDENCIES
 
-        function showLoadingSpinner() {
-            const spinnerFrames = ['-', '\\', '|', '/'];
-            let frame = 0;
-
-            return setInterval(() => {
-                process.stdout.write(`\r${spinnerFrames[frame]} Installing packages...`);
-                frame = (frame + 1) % spinnerFrames.length;
-            }, 100);
-        }
-
-        function stopLoadingSpinner(intervalId) {
-            clearInterval(intervalId);
-            process.stdout.write('\r'); // Clear the loading spinner line
-        }
-
         function installDependencies(command) {
-            const loadingInterval = showLoadingSpinner();
 
             try {
                 execSync(command, { stdio: 'inherit' });
             } catch (error) {
                 console.error('An error occurred:', error);
-            } finally {
-                stopLoadingSpinner(loadingInterval);
             }
         }
 
