@@ -9,15 +9,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const indexCodeFile = 'indexContent.txt';
-const dbConfigFile = 'dbConfig.txt';
+const dbConfigFile = 'db.txt';
 const packageFile = 'packageContent.json';
 const userModelFile = 'userModel.txt';
 const userControllerFile = 'controllerContent.txt';
-const userRouterFile = 'routeSContent.txt';
+const userRouterFile = 'routesContent.txt';
 
 // Read file content from template file.
-const readTemplateFile = (fileName) => {
-    return fs.readFileSync(path.join(__dirname, 'template-codes', fileName), 'utf-8');
+const readTemplateFile = (filePath) => {
+    return fs.readFileSync(path.join(__dirname, 'template-codes', filePath), 'utf-8');
 }
 // Create files
 const createFile = (filepath = '', folders = [], filename = '', content = '') => {
@@ -32,6 +32,7 @@ const createFolder = (folderPath, folder1, folder2) => {
 const createTemplate = (answers) => {
 
     let destination = process.cwd();
+    const databaseChoice = databaseChoice;
 
     if (answers.projectName !== '.') {
         fs.mkdirSync(path.join(destination, answers.projectName), { recursive: true })
@@ -45,7 +46,12 @@ const createTemplate = (answers) => {
     const packageContent = JSON.stringify(packageObj, null, 4);
 
     const gitContent = '.env \n*.env \n/node_modules \npackage-lock.json';
-    const envContent = 'MONGODB_URI = mongodb://127.0.0.1:27017/';
+    let envContent = null;
+    if (databaseChoice === 'mongodb') {
+        envContent = 'MONGODB_URI = mongodb://127.0.0.1:27017/';
+    } else if (databaseChoice === 'postgresql') {
+        envContent = 'PGUSER = \nPGPASSWORD = \nPGDATABSE = \n';
+    }
 
     try {
 
@@ -54,9 +60,13 @@ const createTemplate = (answers) => {
             [destination, 'src', 'routes'],
         ];
 
-        if (answers['databaseChoice'] === 'mongodb') {
+        if (databaseChoice === 'mongodb') {
             foldersToCreate.push(
                 [destination, 'src', 'models'],
+                [destination, 'src', 'controllers']
+            );
+        } else if (databaseChoice === 'postgresql') {
+            foldersToCreate.push(
                 [destination, 'src', 'controllers']
             );
         }
@@ -65,20 +75,26 @@ const createTemplate = (answers) => {
 
 
         const fileData = [
-            { path: destination, folders: [], name: 'index.js', content: readTemplateFile(indexCodeFile) },
+            { path: destination, folders: [], name: 'index.js', content: readTemplateFile(path.join(databaseChoice, indexCodeFile)) },
             { path: destination, folders: [], name: '.gitignore', content: gitContent },
             { path: destination, folders: [], name: 'package.json', content: packageContent },
         ];
 
-        if (answers['databaseChoice'] === 'mongodb') {
+        if (databaseChoice === 'mongodb') {
             fileData.push(
                 { path: destination, folders: [], name: '.env', content: envContent + answers['databaseName'] },
-                { path: destination, folders: ['config'], name: 'db.js', content: readTemplateFile(dbConfigFile) },
-                { path: destination, folders: ['src', 'models'], name: 'User.js', content: readTemplateFile(userModelFile) },
-                { path: destination, folders: ['src', 'controllers'], name: 'UserController.js', content: readTemplateFile(userControllerFile) },
-                { path: destination, folders: ['src', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(userRouterFile) }
+                { path: destination, folders: ['src', 'models'], name: 'User.js', content: readTemplateFile(path.join(databaseChoice, userModelFile)) },
+            );
+        } else if (databaseChoice === 'postgresql') {
+            fileData.push(
+                { path: destination, folders: [], name: '.env', content: envContent }
             );
         }
+        fileData.push(
+            { path: destination, folders: ['config'], name: 'db.js', content: readTemplateFile(path.join(databaseChoice, dbConfigFile)) },
+            { path: destination, folders: ['src', 'controllers'], name: 'UserController.js', content: readTemplateFile(path.join(databaseChoice, userControllerFile)) },
+            { path: destination, folders: ['src', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(path.join('mongodb', userRouterFile)) }
+        );
 
         fileData.forEach(file => createFile(file.path, file.folders, file.name, file.content));
 
@@ -93,17 +109,30 @@ const createTemplate = (answers) => {
             }
         }
 
-        console.log("\n     Installing packages... (express, cors, cookie-parser, dotenv, mongoose, nodemon)\n");
+        if (databaseChoice === 'mongodb') {
+            console.log("\n     Installing packages... (express, cors, cookie-parser, dotenv, mongoose, nodemon)\n");
+        } else if (databaseChoice === 'postgresql') {
+            console.log("\n     Installing packages... (express, cors, cookie-parser, dotenv, pg, nodemon)\n");
+        }
 
         if (answers.projectName !== '.') {
-            installDependencies(`cd ${answers.projectName} && npm i express cors cookie-parser dotenv mongoose`);
+            if (databaseChoice === 'mongodb') {
+                installDependencies(`cd ${answers.projectName} && npm i express cors cookie-parser dotenv mongoose`);
+            } else if (databaseChoice === 'postgresql') {
+                installDependencies(`cd ${answers.projectName} && npm i express cors cookie-parser dotenv pg`);
+            }
             installDependencies(`cd ${answers.projectName} && npm i -D nodemon`)
             installDependencies(`cd ${answers.projectName} && git init`)
         } else {
-            installDependencies('npm i express cors cookie-parser dotenv mongoose');
+            if (databaseChoice === 'mongodb') {
+                installDependencies('npm i express cors cookie-parser dotenv mongoose');
+            } else if (databaseChoice === 'postgresql') {
+                installDependencies('npm i express cors cookie-parser dotenv pg');
+            }
             installDependencies('npm i -D nodemon')
             installDependencies('git init')
         }
+
         console.log("\n     Express server created successfully.");
 
     } catch (error) {

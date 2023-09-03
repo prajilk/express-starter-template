@@ -5,6 +5,7 @@ import fs from "node:fs"
 import path from "node:path"
 import minimist from "minimist"
 import {
+    blue,
     green,
     red,
     reset,
@@ -20,6 +21,11 @@ const DATABASES = [
         display: "Mongodb/Mongoose",
         color: green
     },
+    {
+        name: "postgresql",
+        display: "Postgresql",
+        color: blue
+    },
 ]
 
 const defaultTargetDir = "server";
@@ -32,7 +38,7 @@ if (argv.help || argv.h) {
     console.log(`\nUsage: npx create-my-express-server [project-name] [options]
 
 Options:
-  --db          Specify the database to use (e.g., mongodb)
+  --db          Specify the database to use (e.g., mongodb, postgresql)
   --dbname      Specify the name of the database
   -h, --help    Show this help message`);
     process.exit(0);
