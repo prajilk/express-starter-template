@@ -32,7 +32,7 @@ const createFolder = (folderPath, folder1, folder2) => {
 const createTemplate = (answers) => {
 
     let destination = process.cwd();
-    const databaseChoice = databaseChoice;
+    const databaseChoice = answers['databaseChoice'];
 
     if (answers.projectName !== '.') {
         fs.mkdirSync(path.join(destination, answers.projectName), { recursive: true })
@@ -56,7 +56,7 @@ const createTemplate = (answers) => {
     try {
 
         const foldersToCreate = [
-            [destination, 'config'],
+            [destination, 'src', 'config'],
             [destination, 'src', 'routes'],
         ];
 
@@ -91,7 +91,7 @@ const createTemplate = (answers) => {
             );
         }
         fileData.push(
-            { path: destination, folders: ['config'], name: 'db.js', content: readTemplateFile(path.join(databaseChoice, dbConfigFile)) },
+            { path: destination, folders: ['src', 'config'], name: 'db.js', content: readTemplateFile(path.join(databaseChoice, dbConfigFile)) },
             { path: destination, folders: ['src', 'controllers'], name: 'UserController.js', content: readTemplateFile(path.join(databaseChoice, userControllerFile)) },
             { path: destination, folders: ['src', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(path.join('mongodb', userRouterFile)) }
         );
@@ -133,7 +133,7 @@ const createTemplate = (answers) => {
             installDependencies('git init')
         }
 
-        console.log("\n     Express server created successfully.");
+        console.log(`\n     Express server created successfully with ${databaseChoice}.`);
 
     } catch (error) {
         console.error(error);

@@ -109,7 +109,7 @@ try {
                 })
             },
             {
-                type: argDbName ? null : "text",
+                type: (prev) => prev === 'mongodb' ? 'text' : null,
                 name: "databaseName",
                 message: reset("Database name:"),
                 validate: dbName => isValidDBName(dbName) || "Invalid database name (Don't contain white-spaces & max-length is 20)"
