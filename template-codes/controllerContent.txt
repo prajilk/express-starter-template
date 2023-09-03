@@ -1,4 +1,4 @@
-const User=require('../model/User');
+const User=require('../models/User');
 
 module.exports={
 SomeUserFunction:async(req,res,next)=>{

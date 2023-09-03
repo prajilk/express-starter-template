@@ -1,34 +1,34 @@
 {
-  "name": "create-my-express-app",
-  "version": "1.1.6",
-  "description": "Create a new express app with boilerplate code.",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "create-my-express-app": "./index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/prajilk/express-starter-template.git"
-  },
-  "keywords": [
-    "express",
-    "express template",
-    "express boilerplate code",
-    "express starter file"
-  ],
-  "author": "Prajil K",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/prajilk/express-starter-template/issues"
-  },
-  "homepage": "https://github.com/prajilk/express-starter-template#readme",
-  "dependencies": {
-    "kolorist": "^1.8.0",
-    "minimist": "^1.2.8",
-    "prompts": "^2.4.2"
-  }
+    "name": "create-my-express-app",
+    "version": "1.1.7",
+    "description": "Create a new express app with boilerplate code.",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "create-my-express-app": "index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/prajilk/express-starter-template.git"
+    },
+    "keywords": [
+        "express",
+        "express template",
+        "express boilerplate code",
+        "express starter file"
+    ],
+    "author": "Prajil K",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/prajilk/express-starter-template/issues"
+    },
+    "homepage": "https://github.com/prajilk/express-starter-template#readme",
+    "dependencies": {
+        "kolorist": "^1.8.0",
+        "minimist": "^1.2.8",
+        "prompts": "^2.4.2"
+    }
 }

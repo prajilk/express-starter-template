@@ -8,8 +8,8 @@ const PORT=5000;
 //Connect to database
 require('./config/db.js')();
 
-app.use('/api/user',userRouter)
 const app=express();
+app.use('/api/user',userRouter)
 
 app.use(express.json());
 app.use(cookieParser());

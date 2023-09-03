@@ -45,19 +45,19 @@ const createTemplate = (answers) => {
     const packageContent = JSON.stringify(packageObj, null, 4);
 
     const gitContent = '.env \n*.env \n/node_modules \npackage-lock.json';
-    const envContent = 'MONGODB_URI = mongodb://localhost:27017/';
+    const envContent = 'MONGODB_URI = mongodb://127.0.0.1:27017/';
 
     try {
 
         const foldersToCreate = [
             [destination, 'config'],
-            [destination, 'api', 'routes'],
+            [destination, 'src', 'routes'],
         ];
 
         if (answers['databaseChoice'] === 'mongodb') {
             foldersToCreate.push(
-                [destination, 'api', 'models'],
-                [destination, 'api', 'controllers']
+                [destination, 'src', 'models'],
+                [destination, 'src', 'controllers']
             );
         }
 
@@ -73,10 +73,10 @@ const createTemplate = (answers) => {
         if (answers['databaseChoice'] === 'mongodb') {
             fileData.push(
                 { path: destination, folders: [], name: '.env', content: envContent + answers['databaseName'] },
-                { path: destination, folders: ['config'], name: 'dbConfig.js', content: readTemplateFile(dbConfigFile) },
-                { path: destination, folders: ['api', 'models'], name: 'User.js', content: readTemplateFile(userModelFile) },
-                { path: destination, folders: ['api', 'controllers'], name: 'UserController.js', content: readTemplateFile(userControllerFile) },
-                { path: destination, folders: ['api', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(userRouterFile) }
+                { path: destination, folders: ['config'], name: 'db.js', content: readTemplateFile(dbConfigFile) },
+                { path: destination, folders: ['src', 'models'], name: 'User.js', content: readTemplateFile(userModelFile) },
+                { path: destination, folders: ['src', 'controllers'], name: 'UserController.js', content: readTemplateFile(userControllerFile) },
+                { path: destination, folders: ['src', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(userRouterFile) }
             );
         }
 
