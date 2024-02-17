@@ -9,6 +9,7 @@ import {
     green,
     red,
     reset,
+    yellow,
 } from "kolorist"
 import createTemplate from "./createTemplate.js";
 
@@ -28,16 +29,32 @@ const DATABASES = [
     },
 ]
 
+const LANGUAGES = [
+    {
+        name: "ts",
+        display: "TypeScript",
+        color: blue
+    },
+    {
+        name: "js",
+        display: "JavaScript",
+        color: yellow
+    },
+]
+
 const defaultTargetDir = "server";
 const argTargetDir = formatTargetDir(argv._[0])
 
 let argDatabase = argv.database || argv.db
 let argDbName = argv.dbname || argv.dbn
+let language = argv.ts ? "ts" : argv.js ? "js" : null
 
 if (argv.help || argv.h) {
     console.log(`\nUsage: npx create-my-express-server [project-name] [options]
 
 Options:
+  --ts          To Select TypeScript as language
+  --js          To Select JavaScript as language
   --db          Specify the database to use (e.g., mongodb, postgresql)
   --dbname      Specify the name of the database
   -h, --help    Show this help message`);
@@ -45,7 +62,9 @@ Options:
 }
 if (!isValidDBName(argDbName)) argDbName = null;
 
-DATABASES.forEach((db) => argDatabase !== db.name && (argDatabase = null))
+if (!DATABASES.some(db => db.name === argDatabase)) {
+    argDatabase = null;
+}
 
 let targetDir = argTargetDir || defaultTargetDir
 const getProjectName = () => targetDir === "." ? path.basename(path.resolve()) : targetDir
@@ -88,6 +107,25 @@ try {
                 message: reset("Package name:"),
                 initial: () => toValidPackageName(getProjectName()),
                 validate: dir => isValidPackageName(dir) || "Invalid package.json name"
+            },
+            {
+                type:
+                    language ? null : "select",
+                name: "languageChoice",
+                message:
+                    typeof language === "string"
+                        ? reset(
+                            `"${language}" isn't a valid language. Please choose from below: `
+                        )
+                        : reset("Select a Language:"),
+                initial: 0,
+                choices: LANGUAGES.map(language => {
+                    const languageColor = language.color
+                    return {
+                        title: languageColor(language.display || language.name),
+                        value: language.name
+                    }
+                })
             },
             {
                 type:

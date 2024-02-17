@@ -11,13 +11,15 @@ const __dirname = dirname(__filename);
 const indexCodeFile = 'indexContent.txt';
 const dbConfigFile = 'db.txt';
 const packageFile = 'packageContent.json';
+const nodemonFile = 'nodemonContent.json';
+const tsConfigFile = 'tsconfigContent.json';
 const userModelFile = 'userModel.txt';
 const userControllerFile = 'controllerContent.txt';
 const userRouterFile = 'routesContent.txt';
 
 // Read file content from template file.
-const readTemplateFile = (filePath) => {
-    return fs.readFileSync(path.join(__dirname, 'template-codes', filePath), 'utf-8');
+const readTemplateFile = (langTemplate, filePath) => {
+    return fs.readFileSync(path.join(__dirname, `${langTemplate}-template-codes`, filePath), 'utf-8');
 }
 // Create files
 const createFile = (filepath = '', folders = [], filename = '', content = '') => {
@@ -29,10 +31,15 @@ const createFolder = (folderPath, folder1, folder2) => {
     else fs.mkdirSync(path.join(folderPath, folder1, folder2), { recursive: true })
 }
 
+function isTs(lang) {
+    return lang === 'ts';
+}
+
 const createTemplate = (answers) => {
 
     let destination = process.cwd();
     const databaseChoice = answers['databaseChoice'];
+    const languageChoice = answers['languageChoice'];
 
     if (answers.projectName !== '.') {
         fs.mkdirSync(path.join(destination, answers.projectName), { recursive: true })
@@ -40,10 +47,18 @@ const createTemplate = (answers) => {
     }
 
     // Convert JS Object to json
-    const packageJson = readTemplateFile(packageFile);
+    const packageJson = readTemplateFile(languageChoice, packageFile);
     const packageObj = JSON.parse(packageJson);
     packageObj.name = answers['packageName'];
     const packageContent = JSON.stringify(packageObj, null, 4);
+
+    const nodemonJson = readTemplateFile('ts', nodemonFile);
+    const nodemonObj = JSON.parse(nodemonJson);
+    const nodemonContent = JSON.stringify(nodemonObj, null, 4);
+
+    const tsConfigJson = readTemplateFile('ts', tsConfigFile);
+    const tsConfigObj = JSON.parse(tsConfigJson);
+    const tsConfigContent = JSON.stringify(tsConfigObj, null, 4);
 
     const gitContent = '.env \n*.env \n/node_modules \npackage-lock.json';
     let envContent = null;
@@ -75,15 +90,17 @@ const createTemplate = (answers) => {
 
 
         const fileData = [
-            { path: destination, folders: [], name: 'index.js', content: readTemplateFile(path.join(databaseChoice, indexCodeFile)) },
+            { path: destination, folders: [], name: isTs(languageChoice) ? 'src/index.ts' : 'index.js', content: readTemplateFile(languageChoice, path.join(databaseChoice, indexCodeFile)) },
             { path: destination, folders: [], name: '.gitignore', content: gitContent },
             { path: destination, folders: [], name: 'package.json', content: packageContent },
+            { path: destination, folders: [], name: 'nodemon.json', content: nodemonContent },
+            { path: destination, folders: [], name: 'tsconfig.json', content: tsConfigContent },
         ];
 
         if (databaseChoice === 'mongodb') {
             fileData.push(
                 { path: destination, folders: [], name: '.env', content: envContent + answers['databaseName'] },
-                { path: destination, folders: ['src', 'models'], name: 'User.js', content: readTemplateFile(path.join(databaseChoice, userModelFile)) },
+                { path: destination, folders: ['src', 'models'], name: isTs(languageChoice) ? 'User.ts' : 'User.js', content: readTemplateFile(languageChoice, path.join(databaseChoice, userModelFile)) },
             );
         } else if (databaseChoice === 'postgresql') {
             fileData.push(
@@ -91,9 +108,9 @@ const createTemplate = (answers) => {
             );
         }
         fileData.push(
-            { path: destination, folders: ['src', 'config'], name: 'db.js', content: readTemplateFile(path.join(databaseChoice, dbConfigFile)) },
-            { path: destination, folders: ['src', 'controllers'], name: 'UserController.js', content: readTemplateFile(path.join(databaseChoice, userControllerFile)) },
-            { path: destination, folders: ['src', 'routes'], name: 'UserRoutes.js', content: readTemplateFile(path.join('mongodb', userRouterFile)) }
+            { path: destination, folders: ['src', 'config'], name: isTs(languageChoice) ? 'db.ts' : 'db.js', content: readTemplateFile(languageChoice, path.join(databaseChoice, dbConfigFile)) },
+            { path: destination, folders: ['src', 'controllers'], name: isTs(languageChoice) ? 'UserController.ts' : 'UserController.js', content: readTemplateFile(languageChoice, path.join(databaseChoice, userControllerFile)) },
+            { path: destination, folders: ['src', 'routes'], name: isTs(languageChoice) ? 'UserRoutes.ts' : 'UserRoutes.js', content: readTemplateFile(languageChoice, path.join('mongodb', userRouterFile)) }
         );
 
         fileData.forEach(file => createFile(file.path, file.folders, file.name, file.content));
@@ -109,31 +126,52 @@ const createTemplate = (answers) => {
             }
         }
 
+        function getPackageList(databaseChoice, languageChoice) {
+            const commonPackages = ['express', 'cors', 'cookie-parser', 'dotenv', 'nodemon'];
+            const mongodbPackages = [...commonPackages, 'mongoose'];
+            const postgresqlPackages = [...commonPackages, 'pg'];
+
+            if (databaseChoice === 'mongodb') {
+                return languageChoice === 'ts' ? [...mongodbPackages, 'rimraf'] : mongodbPackages;
+            } else if (databaseChoice === 'postgresql') {
+                return languageChoice === 'ts' ? [...postgresqlPackages, 'rimraf'] : postgresqlPackages;
+            } else {
+                return commonPackages;
+            }
+        }
+
+        function logPackageInstallation(packageList) {
+            console.log(`\n     Installing packages... (${packageList.join(', ')})\n`);
+        }
+
+        const packagesToInstall = getPackageList(databaseChoice, languageChoice);
+        logPackageInstallation(packagesToInstall);
+
+        const projectName = answers.projectName;
+        const projectPath = projectName !== '.' ? `cd ${projectName} && ` : '';
+
         if (databaseChoice === 'mongodb') {
-            console.log("\n     Installing packages... (express, cors, cookie-parser, dotenv, mongoose, nodemon)\n");
+            const mongoPackages = languageChoice === 'ts' ?
+                'npm i express cors cookie-parser dotenv mongoose rimraf' :
+                'npm i express cors cookie-parser dotenv mongoose';
+            installDependencies(`${projectPath}${mongoPackages}`);
         } else if (databaseChoice === 'postgresql') {
-            console.log("\n     Installing packages... (express, cors, cookie-parser, dotenv, pg, nodemon)\n");
+            const pgPackages = languageChoice === 'ts' ?
+                'npm i express cors cookie-parser dotenv pg rimraf' :
+                'npm i express cors cookie-parser dotenv pg';
+            installDependencies(`${projectPath}${pgPackages}`);
         }
 
-        if (answers.projectName !== '.') {
-            if (databaseChoice === 'mongodb') {
-                installDependencies(`cd ${answers.projectName} && npm i express cors cookie-parser dotenv mongoose`);
-            } else if (databaseChoice === 'postgresql') {
-                installDependencies(`cd ${answers.projectName} && npm i express cors cookie-parser dotenv pg`);
-            }
-            installDependencies(`cd ${answers.projectName} && npm i -D nodemon`)
-            installDependencies(`cd ${answers.projectName} && git init`)
-        } else {
-            if (databaseChoice === 'mongodb') {
-                installDependencies('npm i express cors cookie-parser dotenv mongoose');
-            } else if (databaseChoice === 'postgresql') {
-                installDependencies('npm i express cors cookie-parser dotenv pg');
-            }
-            installDependencies('npm i -D nodemon')
-            installDependencies('git init')
-        }
+        let tsDevDependencies = 'npm i -D nodemon @types/cookie-parser @types/cors @types/express @types/node ts-node typescript';
+        databaseChoice === 'postgresql' && (tsDevDependencies += ' @types/pg');
+        const devDependencies = 'npm i -D nodemon';
 
-        console.log(`\n     Express server created successfully with ${databaseChoice}.`);
+        const languageSpecificPackages = languageChoice === 'ts' ? tsDevDependencies : devDependencies;
+        installDependencies(`${projectPath}${languageSpecificPackages}`);
+
+        installDependencies(`${projectPath}git init`);
+
+        console.log(`\n     Express server created successfully with ${databaseChoice} and ${languageChoice === 'ts' ? 'TypeScript' : 'JavaScript'}.`);
 
     } catch (error) {
         console.error(error);
